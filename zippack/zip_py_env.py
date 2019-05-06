@@ -42,13 +42,16 @@ def zipTargetPath(tPath):
     shutil.rmtree(tPath);
 
 if __name__ == '__main__':
+    # 加载配置
     cfg = getJsonConfig();
+    # 转换路径
     petp = os.path.abspath(cfg["py_embed_target_path"]);
     pezp = os.path.abspath(cfg["py_embed_zip_path"]);
     gppp = os.path.abspath(cfg["get_pip_py_path"]);
     tPath = os.path.join(petp, "python");
-    # unzipPyEmbed(pezp, tPath);
-    # runGetPip(tPath, gppp);
+    # 下载压缩
+    unzipPyEmbed(pezp, tPath);
+    runGetPip(tPath, gppp);
     updatePyPth(tPath);
     pipInstallDepends(tPath, cfg["depend_modules"]);
-    # zipTargetPath(tPath);
+    zipTargetPath(tPath);
