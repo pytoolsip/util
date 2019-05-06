@@ -1,0 +1,12 @@
+{
+    "py_embed_zip_path" : "E:/userdata/otherApp/py_env/resource/python-3.7.3-embed-amd64.zip",
+    "py_embed_target_path" : "E:/userdata/otherApp/py_env",
+    "get_pip_py_path" : "E:/userdata/otherApp/py_env/resource/get-pip.py",
+    "depend_modules" : [
+        "wxPython",
+        "grpcio",
+        "protobuf",
+        "grpcio-tools",
+        "paramiko"
+    ]
+}
