@@ -1,7 +1,7 @@
 # @Author: JinZhang
 # @Date:   2019-05-07 11:00:52
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-05-07 17:34:20
+# @Last Modified time: 2019-05-07 18:34:14
 
 client=`awk -F '=' '/\[path\]/{a=1}a==1&&$1~/client/{gsub(/^ +| +$/, "", $2);print $2;exit}' config.ini`
 ptip_exe=`awk -F '=' '/\[path\]/{a=1}a==1&&$1~/ptip_exe/{gsub(/^ +| +$/, "", $2);print $2;exit}' config.ini`
@@ -45,7 +45,7 @@ if [ -f $target_zip ]; then
 	rm $target_zip
 fi
 # 打成zip包
-zip -r target_zip PyToolsIP/* -x \.*
+zip -r $target_zip PyToolsIP/* -x \.*
 # 删除中间文件
 cd ../
 rm -r $target_path
