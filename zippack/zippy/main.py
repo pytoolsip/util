@@ -24,6 +24,7 @@ def updatePyPth(tPath):
         if os.path.isfile(fPath) and re.search("python\d*\._pth", f):
             with open(fPath, "a") as f:
                 f.write("\nLib/site-packages");
+                f.write("\nScripts");
     pass;
 
 def pipInstallDepends(tPath, depends):
