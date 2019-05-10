@@ -1,6 +1,12 @@
 
 @echo off && setlocal enabledelayedexpansion
 
-python main.py
+set /p isLight=Do you ensure use the light mode?(y/n):
+
+if %isLight%==y (
+	python main.py light
+) else (
+	python main.py
+)
 
 pause

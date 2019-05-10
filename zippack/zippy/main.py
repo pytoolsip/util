@@ -1,5 +1,5 @@
 #-*- coding:utf-8 -*-
-import os,re;
+import os,sys,re;
 import json,zipfile,shutil;
 
 def getJsonConfig():
@@ -55,5 +55,6 @@ if __name__ == '__main__':
     unzipPyEmbed(pezp, tPath);
     runGetPip(tPath, gppp);
     updatePyPth(tPath);
-    pipInstallDepends(tPath, cfg["depend_modules"]);
+    if not (len(sys.argv) > 1 and sys.argv[1] == "light"):
+        pipInstallDepends(tPath, cfg["depend_modules"]);
     zipTargetPath(tPath);
