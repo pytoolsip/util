@@ -1,4 +1,5 @@
 {
     "py_project_dir" : "E:/Project/test/test_client",
+    "py_project_target_dir" : "E:/Project/test/test_client_compiled",
     "is_remove_original" : true
 }
