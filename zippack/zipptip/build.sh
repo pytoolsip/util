@@ -48,4 +48,4 @@ fi
 zip -r $target_zip PyToolsIP/* -x \.*
 # 删除中间文件
 cd ../
-rm -r $target_path
+rm -rf $target_path
