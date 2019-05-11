@@ -3,7 +3,7 @@
 # @Date:   2019-05-10 12:29:30
 # @Last Modified by:   JinZhang
 # @Last Modified time: 2019-05-10 14:26:29
-import os,json,shutil,re;
+import os,json,shutil,re,zipfile;
 import compileall;
 
 def getJsonConfig():
@@ -63,6 +63,18 @@ def compileDir(dirPath, isRemoveOri):
 				if name.endswith(".py"):
 					os.remove(os.path.join(root,name));
 
+def zipTargetPath(tDir):
+    tPath = os.path.join(tDir, "PyToolsIP");
+    dirName = os.path.dirname(tPath);
+    zf = zipfile.ZipFile(tPath+".zip", "w");
+    for root, _, files in os.walk(tPath):
+        # 去掉目标根路径，只对目标文件夹下边的文件进行压缩
+        for f in files:
+            absPath = os.path.join(root, f);
+            zf.write(absPath, os.path.relpath(absPath, dirName));
+    zf.close();
+    shutil.rmtree(tPath);
+
 if __name__ == '__main__':
     # 加载配置
     cfg = getJsonConfig();
@@ -73,3 +85,5 @@ if __name__ == '__main__':
     tdPath = copyDir(ppd, pptd);
     # 编译文件
     compileDir(tdPath, cfg.get("is_remove_original", True));
+    # 打成zip包
+    zipTargetPath(pptd);

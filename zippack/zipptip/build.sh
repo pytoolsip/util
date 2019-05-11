@@ -28,8 +28,11 @@ if [ ! -d "$target_pro_path" ]; then
 	mkdir $target_pro_path
 fi
 
-# 拷贝client
-cp -r ${client}"/." $target_pro_path
+# 解压client
+unzip $client -d ${target_path}
+
+# # 拷贝client
+# cp -r ${client}"/." $target_pro_path
 
 # 将pytoolsip.exe复制到target_pro_path
 cp $ptip_exe $target_pro_path
