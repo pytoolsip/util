@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-05-30 11:58:59
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-05-31 11:52:00
+# @Last Modified time: 2019-05-31 15:33:48
 import os;
 import hashlib;
 import json,zipfile,shutil;
@@ -73,6 +73,6 @@ if __name__ == '__main__':
 	saveJson({
 		"filterList" : filterList,
 		"md5Map" : getFileMd5Map(tempPath, filterList), # 获取文件md5数据
-	}, os.path.join(tarPath, "fileMd5Map.json"));
+	}, os.path.join(tarPath, "fileMd5Info.json"));
 	# 删除临时文件
 	shutil.rmtree(tempPath);
