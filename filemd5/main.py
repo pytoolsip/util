@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-05-30 11:58:59
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-05-31 11:15:57
+# @Last Modified time: 2019-05-31 11:52:00
 import os;
 import hashlib;
 import json,zipfile,shutil;
@@ -39,18 +39,21 @@ def getMd5ByFile(file, basePath = ""):
 def getFileMd5Map(tPath, filterList = []):
 	fileMd5Map = {};
 	for file in os.listdir(tPath):
-		if file in filterList:
-			continue;
-		filePath = os.path.join(tPath, file);
-		if os.path.isdir(filePath):
-			for root, _, files in os.walk(filePath):
-				for f in files:
-					relPath = os.path.relpath(os.path.join(root, f), tPath).replace("\\", "/");
-					fileMd5Map[relPath] = getMd5ByFile(relPath, basePath = tPath);
-		else:
-			relPath = os.path.relpath(filePath, tPath).replace("\\", "/");
-			fileMd5Map[relPath] = getMd5ByFile(relPath, basePath = tPath);
+		setFileMd5MapByRecursion(tPath, file, fileMd5Map, filterList)
 	return fileMd5Map;
+
+# 递归这只文件md5映射表
+def setFileMd5MapByRecursion(dirPath, filePath, fileMd5Map = {}, filterList = []):
+	if filePath in filterList:
+		return;
+	# 根据是否为文件夹进行处理
+	absPath = os.path.join(dirPath, filePath);
+	if os.path.isdir(absPath):
+		for fileName in os.listdir(absPath):
+			setFileMd5MapByRecursion(dirPath, os.path.join(filePath, fileName), fileMd5Map = fileMd5Map, filterList = filterList);
+	else:
+		relPath = filePath.replace("\\", "/");
+		fileMd5Map[relPath] = getMd5ByFile(relPath, basePath = dirPath);
 
 # 保存json文件
 def saveJson(data, filePath):
