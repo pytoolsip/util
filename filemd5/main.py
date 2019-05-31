@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-05-30 11:58:59
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-05-30 17:01:48
+# @Last Modified time: 2019-05-31 11:15:57
 import os;
 import hashlib;
 import json,zipfile,shutil;
@@ -36,11 +36,19 @@ def getMd5ByFile(file, basePath = ""):
 	return hm.hexdigest();
 
 # 获取文件md5数据
-def getFileMd5Map(tPath):
+def getFileMd5Map(tPath, filterList = []):
 	fileMd5Map = {};
-	for root, _, files in os.walk(tPath):
-		for f in files:
-			relPath = os.path.relpath(os.path.join(root, f), tPath).replace("\\", "/");
+	for file in os.listdir(tPath):
+		if file in filterList:
+			continue;
+		filePath = os.path.join(tPath, file);
+		if os.path.isdir(filePath):
+			for root, _, files in os.walk(filePath):
+				for f in files:
+					relPath = os.path.relpath(os.path.join(root, f), tPath).replace("\\", "/");
+					fileMd5Map[relPath] = getMd5ByFile(relPath, basePath = tPath);
+		else:
+			relPath = os.path.relpath(filePath, tPath).replace("\\", "/");
 			fileMd5Map[relPath] = getMd5ByFile(relPath, basePath = tPath);
 	return fileMd5Map;
 
@@ -54,12 +62,14 @@ if __name__ == '__main__':
 	cfg = getJsonConfig();
 	srcPath = os.path.abspath(cfg["source_file"]);
 	tarPath = os.path.abspath(cfg["target_path"]);
+	filterList = cfg.get("filter_list", []); # 过滤数据
 	tempPath = os.path.join(tarPath, "tempPath");
 	# 解压文件
 	unzipFile(srcPath, tempPath);
-	# 获取文件md5数据
-	fileMd5Map = getFileMd5Map(tempPath);
 	# 保存json文件
-	saveJson(fileMd5Map, os.path.join(tarPath, "fileMd5Map.json"));
+	saveJson({
+		"filterList" : filterList,
+		"md5Map" : getFileMd5Map(tempPath, filterList), # 获取文件md5数据
+	}, os.path.join(tarPath, "fileMd5Map.json"));
 	# 删除临时文件
 	shutil.rmtree(tempPath);
