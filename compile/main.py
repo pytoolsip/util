@@ -2,7 +2,7 @@
 # @Author: JinZhang
 # @Date:   2019-05-10 12:29:30
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-05-10 14:26:29
+# @Last Modified time: 2019-06-14 16:36:51
 import os,json,shutil,re,zipfile;
 import compileall;
 
@@ -31,11 +31,6 @@ def copyProject(sPath, tPath):
 		else:
 			shutil.copytree(srcPath, targetPath);
 
-def copyDir(srcDir, targetDir):
-	tdPath = os.path.join(targetDir, "PyToolsIP");
-	copyProject(srcDir, tdPath);
-	return tdPath;
-
 def compileDir(dirPath, isRemoveOri):
 	compileall.compile_dir(dirPath);
 	if isRemoveOri:
@@ -63,8 +58,7 @@ def compileDir(dirPath, isRemoveOri):
 				if name.endswith(".py"):
 					os.remove(os.path.join(root,name));
 
-def zipTargetPath(tDir):
-    tPath = os.path.join(tDir, "PyToolsIP");
+def zipTargetPath(tPath):
     dirName = os.path.dirname(tPath);
     zf = zipfile.ZipFile(tPath+".zip", "w");
     for root, _, files in os.walk(tPath):
@@ -82,7 +76,7 @@ if __name__ == '__main__':
     ppd = os.path.abspath(cfg["py_project_dir"]);
     pptd = os.path.abspath(cfg["py_project_target_dir"]);
     # 拷贝工程文件
-    tdPath = copyDir(ppd, pptd);
+    tdPath = copyProject(ppd, pptd);
     # 编译文件
     compileDir(tdPath, cfg.get("is_remove_original", True));
     # 打成zip包
