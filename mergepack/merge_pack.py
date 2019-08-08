@@ -2,26 +2,40 @@
 # @Author: JinZhang
 # @Date:   2019-08-08 17:50:27
 # @Last Modified by:   JinZhang
-# @Last Modified time: 2019-08-08 19:28:01
+# @Last Modified time: 2019-08-08 19:47:35
 import os, re;
 
 # 导入过滤
 importMap = [];
 
+# 匹配组合的第一个
+def matchFirst(p, s):
+	mt = re.match(p, s);
+	if mt:
+		return mt.group(1).strip();
+	return "";
+
 # 根据文件夹，获取内容
 def writeContentByFile(path, file):
 	with open(path, "r", encoding = "utf-8") as f:
 		for line in f.readlines():
-			mt = re.match("^from (.*) import \*.*#\s*local", line);
+			mt = matchFirst("^from\s*(.*)\s*import\s*\*.*#\s*local", line);
 			if mt:
-				writeContentByFile(mt.group(1).strip()+".py", file);
+				writeContentByFile(mt+".py", file);
 			elif not re.match("^#.*", line):
-				mt1 = re.match("^.*(import \w+).*", line);
-				if mt1:
-					ip = mt1.group(1);
-					if ip in importMap:
+				# 匹配from import
+				fip = matchFirst("^.*(from\s*\w+\s*import\s*\w+).*", line);
+				if fip:
+					if fip in importMap:
 						continue;
-					importMap.append(ip);
+					importMap.append(fip);
+				else:
+					# 匹配import
+					ip = matchFirst("^.*(import\s*\w+).*", line);
+					if ip:
+						if ip in importMap:
+							continue;
+						importMap.append(ip);
 				file.write(line);
 
 # 合并文件内容，并输出到指定文件
