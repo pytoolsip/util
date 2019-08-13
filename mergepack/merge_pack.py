@@ -8,6 +8,13 @@ import os, re;
 # 导入过滤
 importMap = [];
 
+# 检测是否已经加载过
+def checkImported(ip):
+	if ip in importMap:
+		return True;
+	importMap.append(ip);
+	return False;
+
 # 匹配组合的第一个
 def matchFirst(p, s):
 	mt = re.match(p, s);
@@ -21,22 +28,24 @@ def writeContentByFile(path, file):
 		for line in f.readlines():
 			mt = matchFirst("^from\s*(.*)\s*import\s*\*.*#\s*local", line);
 			if mt:
-				writeContentByFile(mt+".py", file);
+				if checkImported(mt):
+					continue;
+				writeContentByFile(mt.replace(".", "/")+".py", file);
+				file.write("\n");
 			elif not re.match("^#.*", line):
 				# 匹配from import
-				fip = matchFirst("^.*(from\s*\w+\s*import\s*\w+).*", line);
+				fip = matchFirst("^.*(from\s*\w+\s*import\s*[\w+,\*]).*", line);
 				if fip:
-					if fip in importMap:
+					if checkImported(fip):
 						continue;
-					importMap.append(fip);
 				else:
 					# 匹配import
 					ip = matchFirst("^.*(import\s*\w+).*", line);
 					if ip:
-						if ip in importMap:
+						if checkImported(ip):
 							continue;
-						importMap.append(ip);
-				file.write(line);
+				if line.strip():
+					file.write(line);
 
 # 合并文件内容，并输出到指定文件
 def merge(srcFile, tgtFile):
@@ -53,4 +62,4 @@ if __name__ == '__main__':
 	tgtPath = "installer.py"; # 目标文件路径
 	if os.path.exists("main.py"):
 		merge("main.py", tgtPath);
-		# pack(tgtPath);
+		pack(tgtPath);
